@@ -8,7 +8,7 @@ const ROWS = 10;
 const COLS = 5;
 const WORDS_PER_ATTACK = 5;
 const WORDS_PER_CLEAR = 7;
-const ROUNDS = 3;
+const ROUNDS = 2;
 const COUNTDOWN = 3;
 
 const WORD_BANK = [
@@ -73,7 +73,7 @@ export default function TypingBattleGame() {
   const [round, setRound] = useState(1);
   const [playerBoard, setPlayerBoard] = useState(emptyBoard());
   const [enemyBoard, setEnemyBoard] = useState(emptyBoard());
-  const [words, setWords] = useState(() => Array.from({ length: 7 }, randomWord));
+  const [words, setWords] = useState(() => Array.from({ length: 5 }, randomWord));      // word bank length
   const [input, setInput] = useState("");
   const [typedWords, setTypedWords] = useState(0);
   const [correctChars, setCorrectChars] = useState(0);
@@ -167,18 +167,29 @@ export default function TypingBattleGame() {
   }, [playerBoard, enemyBoard, gameStarted]);
 
   function finishRound(outcome) {
-    if (result) return;
-    setResult(outcome);
-    setRoundResults((r) => [...r, outcome]);
+    if (result) return; // Prevent double finish
 
+    setResult(outcome); // Show win/lose overlay
+    setRoundResults((r) => [...r, outcome]); // Save round result
+
+    // After 2 seconds, decide what to do next
     setTimeout(() => {
-      if (round < ROUNDS) startNextRound();
-      else setGameStarted(false);
+        if (round < ROUNDS) {
+            // Only start next round if there are rounds remaining
+            startNextRound();
+        } else {
+            // All rounds finished, stop game and wait for REPLAY
+            setGameStarted(false);
+        }
     }, 2000);
-  }
+}
 
   // ================= START / NEXT ROUND =================
   function startNextRound() {
+    // Safety check: don't start a new round if all rounds completed
+    if (round >= ROUNDS) return;
+
+    // Reset countdown and game state for the next round
     setCountdown(COUNTDOWN);
     setResult(null);
     setPlayerBoard(emptyBoard());
@@ -187,34 +198,42 @@ export default function TypingBattleGame() {
     setCorrectChars(0);
     setTotalChars(0);
     setInput("");
-    setWords(Array.from({ length: 5 }, randomWord()));
+    setWords(Array.from({ length: 5 }, randomWord));
 
+    // Countdown timer for the next round
     const countdownInterval = setInterval(() => {
-      setCountdown((c) => {
-        if (c === 1) {
-          clearInterval(countdownInterval);
-          setGameStarted(true);
-          setStartTime(Date.now());
-        }
-        return c - 1;
-      });
+        setCountdown((c) => {
+            if (c === 1) {
+                clearInterval(countdownInterval);
+                setGameStarted(true);      // Start next round
+                setStartTime(Date.now());  // Reset timer
+            }
+            return c - 1;
+        });
     }, 1000);
+
+    // Increment round number safely (only if not last round)
     setRound((r) => r + 1);
-  }
+}
 
-  function startGame() {
+// ================= START GAME =================
+function startGame() {
+    // Only allow starting the game if it's the first round
+    if (round > ROUNDS) return;
+
     setCountdown(COUNTDOWN);
+
     const countdownInterval = setInterval(() => {
-      setCountdown((c) => {
-        if (c === 1) {
-          clearInterval(countdownInterval);
-          setGameStarted(true);
-          setStartTime(Date.now());
-        }
-        return c - 1;
-      });
+        setCountdown((c) => {
+            if (c === 1) {
+                clearInterval(countdownInterval);
+                setGameStarted(true);      // Start the game
+                setStartTime(Date.now());  // Record start time
+            }
+            return c - 1;
+        });
     }, 1000);
-  }
+}
 
   function replayGame() {
     setRound(1);
@@ -231,7 +250,7 @@ export default function TypingBattleGame() {
     setInput("");
     setCountdown(COUNTDOWN);
     setGameStarted(false);
-    setWords(Array.from({ length: 7 }, randomWord));
+    setWords(Array.from({ length: 5 }, randomWord));
 }
 
 
