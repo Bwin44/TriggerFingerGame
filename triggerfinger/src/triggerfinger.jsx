@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import './triggerfinger.css';
 
@@ -87,12 +87,21 @@ export default function TypingBattleGame() {
   const [gameStarted, setGameStarted] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN);
   const [wordStatuses, setWordStatuses] = useState(() => Array(7).fill("current"));
+  const [wpmHistory, setWpmHistory] = useState([]);
+  const [accuracyHistory, setAccuracyHistory] = useState([]);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+  if (gameStarted && inputRef.current) {
+    inputRef.current.focus();
+  }
+}, [gameStarted, round, result]);
 
   const currentWord = words[0];
 
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
-  const wpm = elapsedMin > 0 ? Math.round(totalWords / elapsedMin) : 0;
-  const accuracy = totalChars ? Math.round((correctChars / totalChars) * 100) : 100;
+  const wpm = elapsedMin > 0 ? Math.round((correctChars / 5) / elapsedMin) : 0;
+  const accuracy = totalChars ? ((correctChars / totalChars) * 100) : 100;
 
   // ================= HANDLE SPACE SUBMISSION =================
   function handleKeyDown(e) {
@@ -171,6 +180,10 @@ export default function TypingBattleGame() {
 
     setResult(outcome); // Show win/lose overlay
     setRoundResults((r) => [...r, outcome]); // Save round result
+
+    setWpmHistory((prev) => [...prev, wpm]);
+    setAccuracyHistory((prev) => [...prev, accuracy]);
+
 
     // After 2 seconds, decide what to do next
     setTimeout(() => {
@@ -253,6 +266,13 @@ function startGame() {
     setWords(Array.from({ length: 5 }, randomWord));
 }
 
+function average(arr) {
+  if (!arr.length) return 0;
+  return Math.round(arr.reduce((sum, val) => sum + val, 0) / arr.length);
+}
+
+const avgWpm = average(wpmHistory);
+const avgAccuracy = average(accuracyHistory);
 
   const wins = roundResults.filter((r) => r === "win").length;
 
@@ -297,21 +317,21 @@ function startGame() {
       {/* INPUT */}
       {gameStarted && (
         <input
+        ref = {inputRef}
         className="game-input"
           value={input}
           onChange={(e) => setInput(e.target.value.toUpperCase())}
           onKeyDown={handleKeyDown}
           disabled={!!result}
           placeholder="TYPE HERE..."
-          autoFocus
         />
       )}
 
       {/* STATS */}
       {gameStarted && (
-        <div className="flex gap-8 text-lg">
+        <div className="flex text-lg">
           <div>WPM: {wpm}</div>
-          <div>ACCURACY: {accuracy}%</div>
+          <div> ACCURACY: {accuracy.toFixed(1)}%</div>
         </div>
       )}
 
@@ -331,6 +351,8 @@ function startGame() {
               {wins > ROUNDS / 2 ? "CONGRATULATIONS!" : "BETTER LUCK NEXT TIME!"}
             </h2>
             <p>ROUNDS WON: {wins} / {ROUNDS}</p>
+            <p>AVG WPM: {avgWpm}</p>
+            <p>AVG ACCURACY: {avgAccuracy.toFixed(1)}%</p>
           </motion.div>
       </AnimatePresence>
     </div>
