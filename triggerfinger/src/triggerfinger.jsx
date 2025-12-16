@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import './triggerfinger.css';
+
 
 // ================= CONFIG =================
 const ROWS = 10;
@@ -84,6 +86,7 @@ export default function TypingBattleGame() {
   const [roundResults, setRoundResults] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN);
+  const [wordStatuses, setWordStatuses] = useState(() => Array(7).fill("current"));
 
   const currentWord = words[0];
 
@@ -100,28 +103,31 @@ export default function TypingBattleGame() {
   }
 
   function submitWord() {
-    const value = input.toUpperCase().trim();
-    if (!value) return;
+  const value = input.toUpperCase().trim();
+  if (!value) return;
 
-    // increment totalChars for accuracy
-    setTotalChars((c) => c + value.length);
-    // count correct chars only for correct words
-    if (value === currentWord) setCorrectChars((c) => c + value.length);
+  const isCorrect = value === currentWord;
 
-    if (value === currentWord) {
-      setCorrectWords((c) => {
-        const newCorrect = c + 1;
+  setWordStatuses((prev) => {
+    const newStatus = [...prev];
+    newStatus[0] = isCorrect ? "correct" : "incorrect"; // mark first word
+    return [...newStatus.slice(1), "current"]; // advance words, new current at end
+  });
 
-        if (newCorrect % WORDS_PER_ATTACK === 0)
-          setEnemyBoard((b) => addLine(b));
+  setTotalChars((c) => c + value.length);
+  if (isCorrect) setCorrectChars((c) => c + value.length);
 
-        if (newCorrect % WORDS_PER_CLEAR === 0)
-          setPlayerBoard((b) => removeLine(b));
-
-        return newCorrect;
-      });
-      setTotalWords((t) => t + 1);
-    }
+  if (isCorrect) {
+    setCorrectWords((c) => {
+      const newCorrect = c + 1;
+      if (newCorrect % WORDS_PER_ATTACK === 0)
+        setEnemyBoard((b) => addLine(b));
+      if (newCorrect % WORDS_PER_CLEAR === 0)
+        setPlayerBoard((b) => removeLine(b));
+      return newCorrect;
+    });
+    setTotalWords((t) => t + 1);
+  }
 
     // advance word queue
     setWords((w) => [...w.slice(1), randomWord()]);
@@ -232,18 +238,13 @@ export default function TypingBattleGame() {
   const wins = roundResults.filter((r) => r === "win").length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center p-6 gap-6">
+    <div className="game-container">
       <h1 className="text-3xl font-bold">Trigger Finger Battle</h1>
       <p>Round {round} / {ROUNDS}</p>
 
       {/* START BUTTON */}
       {!gameStarted && countdown === COUNTDOWN && round === 1 && (
-        <button
-          onClick={startGame}
-          className="px-6 py-3 bg-cyan-500 text-black rounded-xl font-bold text-lg"
-        >
-          START
-        </button>
+        <button className="game-button start-button" onClick={startGame}>START</button>
       )}
 
       {/* COUNTDOWN */}
@@ -261,30 +262,28 @@ export default function TypingBattleGame() {
 
       {/* WORD QUEUE */}
       {(gameStarted || countdown > 0) && (
-  <div className="flex flex-wrap justify-center gap-4 max-w-xl bg-slate-800 p-4 rounded-xl text-lg">
-    {words.map((w, i) => (
-      <span
-        key={i}
-        className={`px-2 py-1 rounded ${
-          i === 0 ? "text-cyan-400 font-bold bg-slate-700" : "opacity-70"
-        }`}
-        style={{ marginRight: "6px" }} // extra spacing if needed
-      >
+  <div className="word-queue">
+  {words.map((w, i) => {
+    const status = wordStatuses[i]; // "current" | "correct" | "incorrect"
+    return (
+      <span key={i} className={`word-${status}`}>
         {w}
       </span>
-    ))}
-  </div>
+    );
+  })}
+</div>
+
 )}
 
       {/* INPUT */}
       {gameStarted && (
         <input
+        className="game-input"
           value={input}
           onChange={(e) => setInput(e.target.value.toUpperCase())}
           onKeyDown={handleKeyDown}
           disabled={!!result}
           placeholder="TYPE HERE..."
-          className="w-96 p-3 rounded-xl text-black text-lg tracking-wider"
           autoFocus
         />
       )}
@@ -300,22 +299,20 @@ export default function TypingBattleGame() {
       {/* REPLAY BUTTON */}
       {roundResults.length === ROUNDS && (
         <button
-          onClick={replayGame}
-          className="mt-6 px-6 py-3 bg-green-500 text-black rounded-xl font-bold text-lg"
-        >
-          REPLAY
-        </button>
+      className="game-button replay-button"
+      onClick={replayGame}
+    >
+      REPLAY
+    </button>
       )}
 
       <AnimatePresence>
-        {roundResults.length === ROUNDS && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-10 text-center">
             <h2 className="text-4xl font-bold mb-4">
               {wins > ROUNDS / 2 ? "CONGRATULATIONS!" : "BETTER LUCK NEXT TIME!"}
             </h2>
             <p>ROUNDS WON: {wins} / {ROUNDS}</p>
           </motion.div>
-        )}
       </AnimatePresence>
     </div>
   );
