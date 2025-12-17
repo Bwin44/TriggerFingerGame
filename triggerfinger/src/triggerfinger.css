@@ -1,0 +1,138 @@
+/* TypingBattleGame.css */
+
+/* Overall game background and font */
+.game-container {
+  min-height: 100vh;
+  background-color: #d1d5db; /* gray-300 */
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  font-family: Arial, sans-serif;
+  gap: 1.5rem;
+}
+
+/* Title */
+.game-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111827; /* gray-900 */
+}
+
+/* Start / Replay buttons */
+.game-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.game-button:hover {
+  transform: scale(1.05);
+}
+
+.start-button {
+  background-color: #06b6d4; /* cyan-500 */
+  color: black;
+}
+
+.replay-button {
+  background-color: #22c55e; /* green-500 */
+  color: black;
+}
+
+/* Word queue container */
+.word-queue {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 36rem; /* ~576px */
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: #374151; /* slate-700 */
+}
+
+/* Words in the queue */
+.word-queue span {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-width: 36px;
+  text-align: center;
+}
+
+/* Word status colors */
+.word-current {
+  background-color: gray;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.word-correct {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.word-incorrect {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Input box */
+.game-input {
+  width: 24rem;
+  padding: 0.75rem;
+  font-size: 1.125rem;
+  border-radius: 0.75rem;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  outline: none;
+}
+
+/* Stats container */
+.stats {
+  display: flex;
+  gap: 2rem;
+  font-size: 1.125rem;
+}
+
+/* Boards */
+.board-container {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.board-title {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.board-grid {
+  display: grid;
+  gap: 2px;
+  background-color: #111;
+  padding: 0.25rem;
+  border: 2px solid #555;
+}
+
+.board-cell {
+  width: 24px;
+  height: 24px;
+}
