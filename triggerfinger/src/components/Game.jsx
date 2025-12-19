@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../assets/triggerfinger.css";
+import "../assets/game.css";
 
 /* ================= CONFIG ================= */
 const ROWS = 10;
