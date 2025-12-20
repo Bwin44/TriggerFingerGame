@@ -2,38 +2,81 @@
 
 /* Overall game background and font */
 .menu-container {
-  min-height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-color: #d1d5db; /* gray-300 */
-  color: #111;
   display: flex;
+  position: absolute;
   flex-direction: column;
-  align-items: center;
-  padding: 1.5rem;
-  font-family: Arial, sans-serif;
-  gap: 1.5rem;
+  overflow-x: hidden;
 }
 
 .menu-title {
-  font-size: 2rem;
+  width: 700px;
+  padding: 0.75rem;
+  font-size: 3rem;
   font-weight: bold;
   font-style: italic;
+  text-decoration: underline;
+  font-family: "Lucida Console", "Courier New", monospace;
+  margin-top: 25vh;
+  justify-content: center;
+  display: flex;
+  position: relative;
   color: #111827; /* gray-900 */
+  background-image: linear-gradient(orange, yellow, orange);
+  border: 10px solid silver;
+  border-radius: 20px;
+  animation-name: titleAnimation;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  transition-duration: 0.5s;
 }
 
-.menu-button-start {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.125rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: transform 0.15s, background-color 0.15s;
-  background-color: #06b6d4; /* cyan-500 */
+@keyframes titleAnimation {
+  0%   {left: -100%;}
+  100% {left: 26%;}
+}
+
+.menu-title:hover {
+  transition-property: transform;
+  transition-duration: 0.5s;
+  transform: scale(1.05);
+  background-color: #36d7f4ff; /* cyan-500 */
   color: black;
 }
 
+.menu-button-start {
+  width: 250px;
+  padding: 0.75rem 1.5rem;
+  justify-content: center;
+  display: flex;
+  position: relative;
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: underline;
+  font-family: "Lucida Console", "Courier New", monospace;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: #06b6d4; /* cyan-500 */
+  color: black;
+  animation-name: startButton;
+  animation-duration: 2.5s;
+  animation-fill-mode: forwards;
+  transition-duration: 0.5s;
+}
+
+@keyframes startButton {
+  0%   {left: -100%;}
+  100% {left: 43%;}
+}
+
 .menu-button-start:hover {
-  transform: scale(1.05);
+  transition-property: transform;
+  transition-duration: 0.5s;
+  transform: scale(1.25);
   background-color: #36d7f4ff; /* cyan-500 */
   color: black;
 }
