@@ -1,5 +1,10 @@
-import GameRunner from "./pages/GameRunner.jsx";
+import GameRunner from "./pages/GameRunner";
+import Layout from "./components/Layout";
 
 export default function App() {
-  return <GameRunner />;
+  return (
+    <Layout>
+      <GameRunner />
+    </Layout>
+  );
 }
