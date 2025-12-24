@@ -6,11 +6,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: black;
+  min-height: 100vh;
   display: flex;
-  position: absolute;
+  position: relative;
   flex-direction: column;
   overflow-x: hidden;
+  background-color: transparent;
+  z-index: 1;
 }
 
 .menu-title {
@@ -27,6 +29,9 @@
   position: relative;
   color: #111827; /* gray-900 */
   background-image: linear-gradient(orange, yellow, orange);
+  box-shadow:
+    0 0 8px black,
+    0 0 20px yellow;
   border: 10px solid silver;
   border-radius: 20px;
   animation-name: titleAnimation;
@@ -44,8 +49,10 @@
   transition-property: transform;
   transition-duration: 0.5s;
   transform: scale(1.05);
-  background-color: #36d7f4ff; /* cyan-500 */
-  color: black;
+  box-shadow:
+    0 0 8px #ffffff,
+    0 0 20px yellow;
+  color: white;
 }
 
 .menu-button-start {
@@ -60,6 +67,9 @@
   border: none;
   border-radius: 0.75rem;
   background-color: #06b6d4; /* cyan-500 */
+  box-shadow:
+    0 0 8px #4fc3dc99,
+    0 0 20px #4fc3dc;
   color: black;
   animation-name: startButton;
   animation-duration: 2s;
@@ -77,19 +87,22 @@
   transition-duration: 0.5s;
   transform: scale(1.25);
   background-color: #8ee0f0ff; /* cyan-500 */
+  box-shadow:
+    0 0 8px #4fc3dc99,
+    0 0 20px white;
   color: white;
 }
 
 .game-container {
   min-height: 100vh;
-  background-color: #d1d5db; /* gray-300 */
+  background-color: transparent; /* ✅ */
   color: #111;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 1.5rem;
-  font-family: Arial, sans-serif;
   gap: 1.5rem;
+  z-index: 1;
 }
 
 /* Start / Replay buttons */
@@ -184,29 +197,70 @@
   font-size: 1.125rem;
 }
 
-/* Boards */
+/* ================= BOARDS LAYOUT ================= */
+
 .board-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0.2rem;
-}
-
-.board-title {
-  text-align: center;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.board-grid {
   display: grid;
-  gap: 2px;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+/* Individual board */
+.board {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Title */
+.board-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+
+/* Grid fills available space */
+.board-grid {
+  width: 100%;
+  aspect-ratio: 1 / 2;        /* Tall board */
+  max-height: 70vh;
+
+  display: grid;
+  gap: 4px;
+
   background-color: #111;
-  padding: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
   border: 2px solid #555;
 }
 
+/* Cells scale automatically */
 .board-cell {
-  width: 24px;
-  height: 24px;
+  background-color: #1f2933;
+  border-radius: 3px;
+}
+
+.board-cell.filled {
+  background-color: #4ade80;
+}
+
+/* Win/Lose overlay */
+.board-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: red;
+  background: rgba(0,0,0,0.6);
+  border-radius: 0.75rem;
 }

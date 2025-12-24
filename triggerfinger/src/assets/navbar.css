@@ -1,12 +1,17 @@
 .nav-container {
-  width: 45%;
+  width: 15%;
   height: 75px;
   top: 0px;
   left: 0px;
-  border-bottom: 7px solid #14650a;
-  border-right: 7px solid #14650a;
+  border-bottom: 7px solid;
+  border-right: 7px solid;
+  border-color: #ff2d75;
+  box-shadow:
+    0 0 8px #ff2d7599,
+    0 0 20px #ff2d75;
   border-radius: 0px 0px 150px 0px;
   justify-content: center;
+  background-color: black;
   padding-left: 25px;
   position: fixed;
   z-index: 1;
@@ -18,7 +23,10 @@
   font-size: 3rem;
   font-weight: bold;
   font-style: italic;
-  color: #14650a;
+  color: #4fc3dc;
+  text-shadow:
+    0 0 8px #4fc3dc99,
+    0 0 20px #4fc3dc;
   font-family: "Lucida Console", "Courier New", monospace;
   display: flex;
   position: fixed;
