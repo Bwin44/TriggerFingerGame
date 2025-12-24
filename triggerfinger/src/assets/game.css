@@ -30,7 +30,7 @@
   border: 10px solid silver;
   border-radius: 20px;
   animation-name: titleAnimation;
-  animation-duration: 2s;
+  animation-duration: 1.5s;
   animation-fill-mode: forwards;
   transition-duration: 0.5s;
 }
@@ -56,14 +56,13 @@
   position: relative;
   font-size: 2rem;
   font-weight: bold;
-  text-decoration: underline;
   font-family: "Lucida Console", "Courier New", monospace;
   border: none;
   border-radius: 0.75rem;
   background-color: #06b6d4; /* cyan-500 */
   color: black;
   animation-name: startButton;
-  animation-duration: 2.5s;
+  animation-duration: 2s;
   animation-fill-mode: forwards;
   transition-duration: 0.5s;
 }
@@ -77,8 +76,8 @@
   transition-property: transform;
   transition-duration: 0.5s;
   transform: scale(1.25);
-  background-color: #36d7f4ff; /* cyan-500 */
-  color: black;
+  background-color: #8ee0f0ff; /* cyan-500 */
+  color: white;
 }
 
 .game-container {

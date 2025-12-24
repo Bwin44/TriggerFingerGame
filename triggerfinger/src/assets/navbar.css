@@ -1,0 +1,25 @@
+.nav-container {
+  width: 45%;
+  height: 75px;
+  top: 0px;
+  left: 0px;
+  border-bottom: 7px solid #14650a;
+  border-right: 7px solid #14650a;
+  border-radius: 0px 0px 150px 0px;
+  justify-content: center;
+  padding-left: 25px;
+  position: fixed;
+  z-index: 1;
+}
+
+.nav-title {
+  top: 0px;
+  padding-bottom: 4px;
+  font-size: 3rem;
+  font-weight: bold;
+  font-style: italic;
+  color: #14650a;
+  font-family: "Lucida Console", "Courier New", monospace;
+  display: flex;
+  position: fixed;
+}
