@@ -180,13 +180,13 @@
 
 /* Input box */
 .game-input {
-  width: 24rem;
+  width: 20rem;
   padding: 0.75rem;
   font-size: 1.125rem;
   border-radius: 0.75rem;
   border: none;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   outline: none;
 }
 
@@ -228,9 +228,9 @@
 
 /* Grid fills available space */
 .board-grid {
-  width: 100%;
+  width: 70%;
   aspect-ratio: 1 / 2;        /* Tall board */
-  max-height: 70vh;
+  max-height: 50vh;
 
   display: grid;
   gap: 4px;

@@ -4,7 +4,7 @@ import "../assets/game.css";
 
 /* ================= CONFIG ================= */
 const ROWS = 10;
-const COLS = 5;
+const COLS = 1;
 const WORDS_PER_ATTACK = 5;
 const WORDS_PER_CLEAR = 7;
 const ROUNDS = 2;
@@ -44,33 +44,26 @@ const removeLine = (board) => [Array(COLS).fill(0), ...board.slice(0, -1)];
 /* ================= BOARD ================= */
 function Board({ board, title, overlay }) {
   return (
-    <div className="relative">
-      <div className="text-center mb-2 font-bold">{title}</div>
+    <div className="board">
+      <div className="board-title">{title}</div>
 
       <div
+        className="board-grid"
         style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 24px)`,
-          gap: "2px",
-          background: "#111",
-          padding: "6px",
-          border: "2px solid #555",
+          gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+          gridTemplateRows: `repeat(${ROWS}, 1fr)`
         }}
       >
         {board.flat().map((cell, i) => (
           <div
             key={i}
-            style={{
-              width: "24px",
-              height: "24px",
-              background: cell ? "#4ade80" : "#1f2933",
-            }}
+            className={`board-cell ${cell ? "filled" : ""}`}
           />
         ))}
       </div>
 
       {overlay && (
-        <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-red-500">
+        <div className="board-overlay">
           {overlay}
         </div>
       )}
@@ -235,14 +228,13 @@ export default function Game({ onGameOver }) {
   /* ================= RENDER ================= */
   return (
     <div className="game-container">
-      <h1 className="text-3xl font-bold mb-2">Trigger Finger Battle</h1>
       <p className="mb-4">Round {round} / {ROUNDS}</p>
 
       {!gameStarted && countdown > 0 && (
         <div className="text-4xl font-bold mb-4">{countdown}</div>
       )}
 
-      <div className="flex gap-6 mb-4">
+      <div className="board-container">
         <Board
           board={playerBoard}
           title="YOU"
