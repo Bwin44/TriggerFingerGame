@@ -228,7 +228,7 @@ export default function Game({ onGameOver }) {
   /* ================= RENDER ================= */
   return (
     <div className="game-container">
-      <p className="mb-4">Round {round} / {ROUNDS}</p>
+      <p className="mb-4 text-center text-white">Round {round} / {ROUNDS}</p>
 
       {!gameStarted && countdown > 0 && (
         <div className="text-4xl font-bold mb-4">{countdown}</div>
