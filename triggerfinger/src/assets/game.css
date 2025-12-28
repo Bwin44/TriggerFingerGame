@@ -28,11 +28,10 @@
   display: flex;
   position: relative;
   color: #111827; /* gray-900 */
-  background-image: linear-gradient(orange, yellow, orange);
+  background-color: #06b6d4; /* cyan-500 */
   box-shadow:
-    0 0 8px black,
-    0 0 20px yellow;
-  border: 10px solid silver;
+    0 0 8px #4fc3dc99,
+    0 0 20px #4fc3dc;
   border-radius: 20px;
   animation-name: titleAnimation;
   animation-duration: 1.5s;
@@ -49,9 +48,10 @@
   transition-property: transform;
   transition-duration: 0.5s;
   transform: scale(1.05);
+  background-color: #8ee0f0ff; /* cyan-500 */
   box-shadow:
-    0 0 8px #ffffff,
-    0 0 20px yellow;
+    0 0 8px #4fc3dc99,
+    0 0 20px white;
   color: white;
 }
 
@@ -66,10 +66,10 @@
   font-family: "Lucida Console", "Courier New", monospace;
   border: none;
   border-radius: 0.75rem;
-  background-color: #06b6d4; /* cyan-500 */
+  background-color: #ff2d75;
   box-shadow:
-    0 0 8px #4fc3dc99,
-    0 0 20px #4fc3dc;
+    0 0 8px #ff2d7599,
+    0 0 20px #ff2d75;
   color: black;
   animation-name: startButton;
   animation-duration: 2s;
@@ -86,9 +86,9 @@
   transition-property: transform;
   transition-duration: 0.5s;
   transform: scale(1.25);
-  background-color: #8ee0f0ff; /* cyan-500 */
+  background-color: #ff2d75;
   box-shadow:
-    0 0 8px #4fc3dc99,
+    0 0 8px #ff2d7599,
     0 0 20px white;
   color: white;
 }
