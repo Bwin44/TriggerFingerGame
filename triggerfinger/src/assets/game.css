@@ -1,15 +1,15 @@
 /* game.css */
 
-.game-container {
+/*.game-container {
   min-height: 100vh;
-  background-color: transparent; /* ✅ */
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 1.5rem;
   gap: 1.5rem;
   z-index: 1;
-}
+}*/
 
 /* Start / Replay buttons */
 .game-button {
@@ -26,15 +26,14 @@
   transform: scale(1.05);
 }
 
-.start-button {
-  background-color: #06b6d4; /* cyan-500 */
+/*.start-button {
+  background-color: #06b6d4; /* cyan-500 
   color: black;
-}
+}*/
 
-.replay-button {
-  background-color: #22c55e; /* green-500 */
-  color: black;
-}
+/*.replay-button {
+  background-color: #22c55e; /* green-500
+}*/
 
 /* Word queue container */
 .word-queue {
@@ -85,7 +84,7 @@
 }
 
 /* Input box */
-.game-input {
+/*.game-input {
   width: 20rem;
   padding: 0.75rem;
   font-size: 1.125rem;
@@ -94,18 +93,18 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   outline: none;
-}
+}*/
 
 /* Stats container */
-.stats {
+/*.stats {
   display: flex;
   gap: 2rem;
   font-size: 1.125rem;
-}
+}*/
 
 /* ================= BOARDS LAYOUT ================= */
 
-.board-container {
+/*.board-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
@@ -113,24 +112,24 @@
   max-width: 1400px;
   margin: 0 auto;
   align-items: center;
-}
+}*/
 
 /* Individual board */
-.board {
+/*.board {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+}*/
 
 /* Title */
-.board-title {
+/*.board-title {
   margin-bottom: 0.75rem;
   font-size: 1.25rem;
   font-weight: bold;
   text-align: center;
   color: white;
-}
+}*/
 
 /* Grid fills available space */
 .board-grid {

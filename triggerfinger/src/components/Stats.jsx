@@ -6,7 +6,7 @@ export default function Stats({ results, wpmHistory, accuracyHistory, onReplay }
 
   return (
     <div className="game-container text-center">
-      <h2 className="text-4xl font-bold mb-4">
+      <h2 className="text-4xl font-bold mb-4 text-white">
         {wins > results.length / 2 ? "CONGRATULATIONS!" : "BETTER LUCK NEXT TIME!"}
       </h2>
 
@@ -15,7 +15,7 @@ export default function Stats({ results, wpmHistory, accuracyHistory, onReplay }
       <p>AVG ACCURACY: {average(accuracyHistory).toFixed(1)}%</p>
 
       <button
-        className="game-button replay-button mt-6"
+        className="game-button replay-button mt-6 text-black bg-green-500"
         onClick={onReplay}
       >
         REPLAY

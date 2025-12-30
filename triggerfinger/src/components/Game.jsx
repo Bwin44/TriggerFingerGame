@@ -11,24 +11,24 @@ const ROUNDS = 2;
 const COUNTDOWN = 3;
 
 const WORD_BANK = [
-  "THE","BE","TO","OF","AND","A","IN","THAT","HAVE","I","IT","FOR","NOT","ON","WITH",
-  "HE","AS","YOU","DO","AT","THIS","BUT","HIS","BY","FROM","THEY","WE","SAY","HER",
-  "SHE","OR","AN","WILL","MY","ONE","ALL","WOULD","THERE","THEIR","IS","ARE","WAS",
-  "WERE","SO","IF","OUT","UP","WHAT","ABOUT","WHO","GET","WHICH","GO","ME","WHEN",
-  "MAKE","CAN","LIKE","TIME","NO","JUST","HIM","KNOW","TAKE","PEOPLE","INTO","YEAR",
-  "YOUR","GOOD","SOME","COULD","THEM","SEE","OTHER","THAN","THEN","NOW","LOOK","ONLY",
-  "COME","ITS","OVER","THINK","ALSO","BACK","AFTER","USE","TWO","HOW","OUR","WORK",
-  "FIRST","WELL","WAY","EVEN","NEW","WANT","BECAUSE","ANY","THESE","GIVE","DAY","MOST",
-  "US","REACT","KEYBOARD","SPEED","BATTLE","LOGIC","STATE","EFFECT","COMPONENT",
-  "RENDER","HOOK","TYPING","ACCURACY",
-  "PEOPLE","DOES","HERE","YOUR","WHERE","WHEN","US","ALL","HOW","HAS","MORE","THAN",
-  "HEAR","ASK","SEE","SAY","DO","WHOLE","YET","EACH","THROUGH","TOGETHER","MAY",
-  "NEED","SOME","WILL","CAN","UP","DOWN","AWAY","BELOW","ABOVE","ALWAYS","NEVER",
-  "HERE","LITTLE","LESS","GREAT","WALK","RUN","FIND","LOOK","WALK","SIT","STAY","MOVE",
-  "LEAVE","ENTER","FEEL","USE","TAKE","GIVE","RECEIVE","BEGIN","END","CHOOSE","MAKE",
-  "HAVE","REMAIN","CREATE","BUILD","START","FINISH","MOVE","SLOW","FAST","ACT","FEEL",
-  "THINK","IMAGINE","REMEMBER","SHOW","PROVE","ANSWER","TURN","HOLD","AGAIN","EXPLAIN",
-  "HELP","WAIT","SING","DANCE","SLEEP","WAKE","CLOSE","OPEN","NEED","WAIT","ENJOY","CREATE"
+  "THE", "BE", "TO", "OF", "AND", "A", "IN", "THAT", "HAVE", "I", "IT", "FOR", "NOT", "ON", "WITH",
+  "HE", "AS", "YOU", "DO", "AT", "THIS", "BUT", "HIS", "BY", "FROM", "THEY", "WE", "SAY", "HER",
+  "SHE", "OR", "AN", "WILL", "MY", "ONE", "ALL", "WOULD", "THERE", "THEIR", "IS", "ARE", "WAS",
+  "WERE", "SO", "IF", "OUT", "UP", "WHAT", "ABOUT", "WHO", "GET", "WHICH", "GO", "ME", "WHEN",
+  "MAKE", "CAN", "LIKE", "TIME", "NO", "JUST", "HIM", "KNOW", "TAKE", "PEOPLE", "INTO", "YEAR",
+  "YOUR", "GOOD", "SOME", "COULD", "THEM", "SEE", "OTHER", "THAN", "THEN", "NOW", "LOOK", "ONLY",
+  "COME", "ITS", "OVER", "THINK", "ALSO", "BACK", "AFTER", "USE", "TWO", "HOW", "OUR", "WORK",
+  "FIRST", "WELL", "WAY", "EVEN", "NEW", "WANT", "BECAUSE", "ANY", "THESE", "GIVE", "DAY", "MOST",
+  "US", "REACT", "KEYBOARD", "SPEED", "BATTLE", "LOGIC", "STATE", "EFFECT", "COMPONENT",
+  "RENDER", "HOOK", "TYPING", "ACCURACY",
+  "PEOPLE", "DOES", "HERE", "YOUR", "WHERE", "WHEN", "US", "ALL", "HOW", "HAS", "MORE", "THAN",
+  "HEAR", "ASK", "SEE", "SAY", "DO", "WHOLE", "YET", "EACH", "THROUGH", "TOGETHER", "MAY",
+  "NEED", "SOME", "WILL", "CAN", "UP", "DOWN", "AWAY", "BELOW", "ABOVE", "ALWAYS", "NEVER",
+  "HERE", "LITTLE", "LESS", "GREAT", "WALK", "RUN", "FIND", "LOOK", "WALK", "SIT", "STAY", "MOVE",
+  "LEAVE", "ENTER", "FEEL", "USE", "TAKE", "GIVE", "RECEIVE", "BEGIN", "END", "CHOOSE", "MAKE",
+  "HAVE", "REMAIN", "CREATE", "BUILD", "START", "FINISH", "MOVE", "SLOW", "FAST", "ACT", "FEEL",
+  "THINK", "IMAGINE", "REMEMBER", "SHOW", "PROVE", "ANSWER", "TURN", "HOLD", "AGAIN", "EXPLAIN",
+  "HELP", "WAIT", "SING", "DANCE", "SLEEP", "WAKE", "CLOSE", "OPEN", "NEED", "WAIT", "ENJOY", "CREATE"
 ];
 
 /* ================= HELPERS ================= */
@@ -44,8 +44,8 @@ const removeLine = (board) => [Array(COLS).fill(0), ...board.slice(0, -1)];
 /* ================= BOARD ================= */
 function Board({ board, title, overlay }) {
   return (
-    <div className="board">
-      <div className="board-title">{title}</div>
+    <div className="relative flex flex-col items-center">   {/* .board */}
+      <div className="mb-3 text-2xl font-bold text-center text-white">{title}</div>  {/* .board-title */}
 
       <div
         className="board-grid"
@@ -151,9 +151,9 @@ export default function Game({ onGameOver }) {
     const isCorrect = value === currentWord;
 
     setWordStatuses((prev) => {
-      const next = [...prev];
-      next[0] = isCorrect ? "correct" : "incorrect";
-      return [...next.slice(1), "current"];
+      const updated = [...prev];
+      updated[0] = isCorrect ? "correct" : "incorrect";
+      return updated;
     });
 
     setTotalChars((c) => c + value.length);
@@ -227,14 +227,24 @@ export default function Game({ onGameOver }) {
 
   /* ================= RENDER ================= */
   return (
-    <div className="game-container">
+    <div className="min-h-screen flex flex-col items-stretch p-6 gap-6 bg-transparent relative z-10">   {/* .game-container */}
       <p className="mb-4 text-center text-white">Round {round} / {ROUNDS}</p>
 
-      {!gameStarted && countdown > 0 && (
-        <div className="text-4xl font-bold mb-4">{countdown}</div>
+      {!gameStarted && countdown > 0 && ( /* countdown */
+        <div className="text-4xl font-bold mb-4 text-center text-white">{countdown}</div>
       )}
 
-      <div className="board-container">
+      <div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto items-center">     {/* .board-container */}
+        {/* .stats */}<div className="flex items-center justify-center self-stretch">
+          <div
+            className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
+              }`}
+          >
+            <div>WPM: {wpm}</div>
+            <div>ACCURACY: {accuracy.toFixed(1)}%</div>
+          </div>
+        </div>
+
         <Board
           board={playerBoard}
           title="YOU"
@@ -247,32 +257,52 @@ export default function Game({ onGameOver }) {
         />
       </div>
 
-      <div className="word-queue mb-4">
-        {words.map((w, i) => (
-          <span key={i} className={`word-${wordStatuses[i]}`}>
+      {/* Word Queue + Input centered under YOU */}
+<div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto">
+  <div /> {/* empty stats column */}
+
+  <div className="flex flex-col items-center gap-4">
+    {/* WORD QUEUE */}
+    <div className="flex gap-3 text-xl font-bold tracking-wide">
+      {words.map((w, i) => {
+        const status = wordStatuses[i];
+        return (
+          <span
+            key={i}
+            className={`px-3 py-1 rounded-lg transition-colors duration-300
+              ${
+                status === "correct"
+                  ? "text-green-400"
+                  : status === "incorrect"
+                  ? "text-red-400"
+                  : "text-white"
+              }`}
+          >
             {w}
           </span>
-        ))}
-      </div>
+        );
+      })}
+    </div>
 
-      {gameStarted && (
-        <input
-          ref={inputRef}
-          className="game-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value.toUpperCase())}
-          onKeyDown={handleKeyDown}
-          disabled={!!result}
-          placeholder="TYPE HERE..."
-        />
-      )}
+    {/* INPUT */}
+    {gameStarted && (
+      <input
+        ref={inputRef}
+        className="w-80 p-3 text-lg rounded-xl outline-none uppercase tracking-wide
+                   bg-cyan-500 text-black placeholder-black/60
+                   focus:ring-4 focus:ring-cyan-300 transition"
+        value={input}
+        onChange={(e) => setInput(e.target.value.toUpperCase())}
+        onKeyDown={handleKeyDown}
+        disabled={!!result}
+        placeholder="TYPE HERE..."
+      />
+    )}
+  </div>
 
-      {gameStarted && (
-        <div className="flex gap-6 text-lg mt-4">
-          <div>WPM: {wpm}</div>
-          <div>ACCURACY: {accuracy.toFixed(1)}%</div>
-        </div>
-      )}
+  <div /> {/* empty opponent column */}
+</div>
+
     </div>
   );
 }

@@ -49,12 +49,12 @@
     0 0 20px #4fc3dc;
 }
 
-.player-2 {
+/*.player-2 {
   color: #ff2d75;
   text-shadow:
     0 0 8px #ff2d7599,
     0 0 20px #ff2d75;
-}
+}*/
 
 /* Animation */
 @keyframes floatWord {
