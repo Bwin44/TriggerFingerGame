@@ -78,12 +78,18 @@ export default function Game({ onGameOver }) {
   const [playerBoard, setPlayerBoard] = useState(emptyBoard());
   const [enemyBoard, setEnemyBoard] = useState(emptyBoard());
 
+  const WORD_QUEUE_SIZE = 5;
+
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+
   const [words, setWords] = useState(() =>
-    Array.from({ length: 5 }, randomWord)
+    Array.from({ length: WORD_QUEUE_SIZE }, randomWord)
   );
+
   const [wordStatuses, setWordStatuses] = useState(
-    () => Array(7).fill("current")
+    () => Array(WORD_QUEUE_SIZE).fill("current")
   );
+
 
   const [input, setInput] = useState("");
   const [correctChars, setCorrectChars] = useState(0);
@@ -100,7 +106,7 @@ export default function Game({ onGameOver }) {
   const [startTime, setStartTime] = useState(null);
 
   const inputRef = useRef(null);
-  const currentWord = words[0];
+  const currentWord = words[currentWordIndex];
 
   /* ================= METRICS ================= */
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
@@ -150,9 +156,10 @@ export default function Game({ onGameOver }) {
 
     const isCorrect = value === currentWord;
 
+    // Mark the CURRENT word green/red
     setWordStatuses((prev) => {
       const updated = [...prev];
-      updated[0] = isCorrect ? "correct" : "incorrect";
+      updated[currentWordIndex] = isCorrect ? "correct" : "incorrect";
       return updated;
     });
 
@@ -170,9 +177,20 @@ export default function Game({ onGameOver }) {
       });
     }
 
-    setWords((w) => [...w.slice(1), randomWord()]);
+    // 🧠 If this was NOT the last word → move cursor
+    if (currentWordIndex < WORD_QUEUE_SIZE - 1) {
+      setCurrentWordIndex((i) => i + 1);
+    }
+    // 🧠 If this WAS the 5th word → shift entire queue
+    else {
+      setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
+      setWordStatuses(Array(WORD_QUEUE_SIZE).fill("current"));
+      setCurrentWordIndex(0);
+    }
+
     setInput("");
   }
+
 
   /* ================= AI ================= */
   useEffect(() => {
@@ -258,50 +276,54 @@ export default function Game({ onGameOver }) {
       </div>
 
       {/* Word Queue + Input centered under YOU */}
-<div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto">
-  <div /> {/* empty stats column */}
+      <div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto">
+        <div /> {/* empty stats column */}
 
-  <div className="flex flex-col items-center gap-4">
-    {/* WORD QUEUE */}
-    <div className="flex gap-3 text-xl font-bold tracking-wide">
-      {words.map((w, i) => {
-        const status = wordStatuses[i];
-        return (
-          <span
-            key={i}
-            className={`px-3 py-1 rounded-lg transition-colors duration-300
-              ${
-                status === "correct"
-                  ? "text-green-400"
-                  : status === "incorrect"
-                  ? "text-red-400"
-                  : "text-white"
-              }`}
-          >
-            {w}
-          </span>
-        );
-      })}
-    </div>
+        <div className="flex flex-col items-center gap-4">
+          {/* WORD QUEUE */}
+          <div className="flex gap-3 text-xl font-bold tracking-wide">
+            {words.map((w, i) => {
+              const status = wordStatuses[i];
+              const isActive = i === currentWordIndex;
 
-    {/* INPUT */}
-    {gameStarted && (
-      <input
-        ref={inputRef}
-        className="w-80 p-3 text-lg rounded-xl outline-none uppercase tracking-wide
+              return (
+                <span
+                  key={i}
+                  className={`px-3 py-1 rounded-lg transition-all duration-200
+        ${status === "correct"
+                      ? "text-green-400"
+                      : status === "incorrect"
+                        ? "text-red-400"
+                        : isActive
+                          ? "text-cyan-300 scale-110"
+                          : "text-white/60"
+                    }`}
+                >
+                  {w}
+                </span>
+              );
+            })}
+
+          </div>
+
+          {/* INPUT */}
+          {gameStarted && (
+            <input
+              ref={inputRef}
+              className="w-80 p-3 text-lg rounded-xl outline-none uppercase tracking-wide
                    bg-cyan-500 text-black placeholder-black/60
                    focus:ring-4 focus:ring-cyan-300 transition"
-        value={input}
-        onChange={(e) => setInput(e.target.value.toUpperCase())}
-        onKeyDown={handleKeyDown}
-        disabled={!!result}
-        placeholder="TYPE HERE..."
-      />
-    )}
-  </div>
+              value={input}
+              onChange={(e) => setInput(e.target.value.toUpperCase())}
+              onKeyDown={handleKeyDown}
+              disabled={!!result}
+              placeholder="TYPE HERE..."
+            />
+          )}
+        </div>
 
-  <div /> {/* empty opponent column */}
-</div>
+        <div /> {/* empty opponent column */}
+      </div>
 
     </div>
   );
