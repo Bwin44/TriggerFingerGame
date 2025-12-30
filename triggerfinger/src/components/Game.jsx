@@ -281,7 +281,7 @@ export default function Game({ onGameOver }) {
 
         <div className="flex flex-col items-center gap-4">
           {/* WORD QUEUE */}
-          <div className="flex gap-3 text-xl font-bold tracking-wide">
+          <div className="flex flex-wrap justify-center gap-3 text-xl font-bold rounded-lg tracking-wide bg-[#374151]">
             {words.map((w, i) => {
               const status = wordStatuses[i];
               const isActive = i === currentWordIndex;

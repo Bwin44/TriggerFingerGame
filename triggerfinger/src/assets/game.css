@@ -36,16 +36,16 @@
 }*/
 
 /* Word queue container */
-.word-queue {
+/*.word-queue {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
-  max-width: 36rem; /* ~576px */
+  max-width: 36rem; /* ~576px 
   padding: 1rem;
   border-radius: 1rem;
-  background-color: #374151; /* slate-700 */
-}
+  background-color: #374151; /* slate-700
+}*/
 
 /* Words in the queue */
 .word-queue span {
