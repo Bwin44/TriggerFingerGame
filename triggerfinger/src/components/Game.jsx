@@ -7,7 +7,7 @@ const ROWS = 10;
 const COLS = 1;
 const WORDS_PER_ATTACK = 5;
 const WORDS_PER_CLEAR = 7;
-const ROUNDS = 2;
+const ROUNDS = 3;
 const COUNTDOWN = 3;
 
 const WORD_BANK = [
@@ -42,9 +42,20 @@ const addLine = (board) => [...board.slice(1), Array(COLS).fill(1)];
 const removeLine = (board) => [Array(COLS).fill(0), ...board.slice(0, -1)];
 
 /* ================= BOARD ================= */
-function Board({ board, title, overlay }) {
+function Board({ board, title, overlay, shake }) {
   return (
-    <div className="relative flex flex-col items-center">   {/* .board */}
+    <motion.div
+      className="relative flex flex-col items-center"
+      animate={shake ? "shake" : "idle"}
+      variants={{
+        idle: { x: 0 },
+        shake: {
+          x: [0, -8, 8, -6, 6, -3, 3, 0],
+          transition: { duration: 0.25 },
+        }
+      }}
+    >
+      {/* .board */}
       <div className="mb-3 text-2xl font-bold text-center text-white">{title}</div>  {/* .board-title */}
 
       <div
@@ -67,7 +78,7 @@ function Board({ board, title, overlay }) {
           {overlay}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -107,6 +118,9 @@ export default function Game({ onGameOver }) {
 
   const inputRef = useRef(null);
   const currentWord = words[currentWordIndex];
+
+  const [playerHit, setPlayerHit] = useState(false);
+  const [enemyHit, setEnemyHit] = useState(false);
 
   /* ================= METRICS ================= */
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
@@ -169,8 +183,11 @@ export default function Game({ onGameOver }) {
     if (isCorrect) {
       setCorrectWords((c) => {
         const n = c + 1;
-        if (n % WORDS_PER_ATTACK === 0)
+        if (n % WORDS_PER_ATTACK === 0) {
           setEnemyBoard((b) => addLine(b));
+          setEnemyHit(true);
+          setTimeout(() => setEnemyHit(false), 200);
+        }
         if (n % WORDS_PER_CLEAR === 0)
           setPlayerBoard((b) => removeLine(b));
         return n;
@@ -198,6 +215,8 @@ export default function Game({ onGameOver }) {
 
     const interval = setInterval(() => {
       setPlayerBoard((b) => addLine(b));
+      setPlayerHit(true);
+      setTimeout(() => setPlayerHit(false), 200);
     }, 1200);
 
     return () => clearInterval(interval);
@@ -246,7 +265,8 @@ export default function Game({ onGameOver }) {
   /* ================= RENDER ================= */
   return (
     <div className="min-h-screen flex flex-col items-stretch p-6 gap-6 bg-transparent relative z-10">   {/* .game-container */}
-      <p className="mb-4 text-center text-white">Round {round} / {ROUNDS}</p>
+      <p className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
+        }`}>Round {round} / {ROUNDS}</p>
 
       {!gameStarted && countdown > 0 && ( /* countdown */
         <div className="text-4xl font-bold mb-4 text-center text-white">{countdown}</div>
@@ -267,11 +287,13 @@ export default function Game({ onGameOver }) {
           board={playerBoard}
           title="YOU"
           overlay={result === "lose" ? "YOU LOSE" : null}
+          shake={playerHit}
         />
         <Board
           board={enemyBoard}
           title="OPPONENT"
           overlay={result === "win" ? "YOU WIN" : null}
+          shake={enemyHit}
         />
       </div>
 
