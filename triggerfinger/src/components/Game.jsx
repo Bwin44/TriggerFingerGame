@@ -106,6 +106,7 @@ export default function Game({ onGameOver }) {
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   const [correctWords, setCorrectWords] = useState(0);
+  const [enemyCorrectWords, setEnemyCorrectWords] = useState(0);
 
   const [result, setResult] = useState(null);
   const [roundResults, setRoundResults] = useState([]);
@@ -183,13 +184,19 @@ export default function Game({ onGameOver }) {
     if (isCorrect) {
       setCorrectWords((c) => {
         const n = c + 1;
+
+        //Player attacks every 5 words
         if (n % WORDS_PER_ATTACK === 0) {
           setEnemyBoard((b) => addLine(b));
           setEnemyHit(true);
           setTimeout(() => setEnemyHit(false), 200);
         }
-        if (n % WORDS_PER_CLEAR === 0)
+
+        //Player clears every 7 words
+        if (n % WORDS_PER_CLEAR === 0) {
           setPlayerBoard((b) => removeLine(b));
+        }
+
         return n;
       });
     }
@@ -214,13 +221,27 @@ export default function Game({ onGameOver }) {
     if (!gameStarted || result) return;
 
     const interval = setInterval(() => {
-      setPlayerBoard((b) => addLine(b));
-      setPlayerHit(true);
-      setTimeout(() => setPlayerHit(false), 200);
-    }, 1200);
+      setEnemyCorrectWords((c) => {
+        const n = c + 1;
 
-    return () => clearInterval(interval);
-  }, [gameStarted, result]);
+        // AI attacks player every 5 words
+        if (n % WORDS_PER_ATTACK === 0) {
+          setPlayerBoard((b) => addLine(b));
+          setPlayerHit(true);
+          setTimeout(() => setPlayerHit(false), 200);
+        }
+
+        // AI clears its own board every 7 words
+        if (n % WORDS_PER_CLEAR === 0) {
+          setEnemyBoard((b) => removeLine(b));
+        }
+
+        return n;
+    });
+  }, 1200); // AI "typing speed"
+
+  return () => clearInterval(interval);
+}, [gameStarted, result]);
 
   /* ================= WIN / LOSE ================= */
   useEffect(() => {
@@ -254,6 +275,7 @@ export default function Game({ onGameOver }) {
     setResult(null);
     setPlayerBoard(emptyBoard());
     setEnemyBoard(emptyBoard());
+    setEnemyCorrectWords(0);
     setWords(Array.from({ length: 5 }, randomWord));
     setWordStatuses(Array(7).fill("current"));
     setCorrectChars(0);
@@ -272,14 +294,15 @@ export default function Game({ onGameOver }) {
         <div className="px-6 py-2 text-4xl font-bold mb-4 text-center text-white border-2 border-cyan-400 rounded-lg">{countdown}</div>
       )}
 
-      <div className="grid grid-cols-[1fr_20px_1fr] w-full max-w-[1600px] mx-auto items-center">     {/* .board-container */}
+      <div className="grid grid-cols-[1fr_10px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
         <Board
           board={playerBoard}
           title="YOU"
           overlay={result === "lose" ? "YOU LOSE" : null}
           shake={playerHit}
         />
-        {/* .stats */}<div className="flex items-center justify-center self-stretch">
+        {/* .stats */}
+        <div className="flex items-center justify-center self-stretch">
           <div
             className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity 
               duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
@@ -303,12 +326,13 @@ export default function Game({ onGameOver }) {
       </div>
 
       {/* Word Queue + Input centered under YOU */}
-      <div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto">
+      <div className="grid grid-cols-[1fr_1fr_1fr] w-full max-w-[1600px] ml-auto">
         <div /> {/* empty stats column */}
 
         <div className="flex flex-col items-center gap-4">
           {/* WORD QUEUE */}
-          <div className="flex flex-wrap justify-center gap-3 p-1 text-xl font-bold rounded-lg tracking-wide bg-[#374151]">
+          <div className="flex flex-nonwrap items-center justify-center gap-3 p-1 text-xl font-bold rounded-lg tracking-wide 
+          overflow-x-hidden overflow-y-hidden whitespace-nowrap max-w-full bg-[#374151]">
             {words.map((w, i) => {
               const status = wordStatuses[i];
               const isActive = i === currentWordIndex;
