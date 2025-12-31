@@ -264,31 +264,36 @@ export default function Game({ onGameOver }) {
 
   /* ================= RENDER ================= */
   return (
-    <div className="min-h-screen flex flex-col items-stretch p-6 gap-6 bg-transparent relative z-10">   {/* .game-container */}
-      <p className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
+    <div className="min-h-screen flex flex-col items-center p-6 gap-6 bg-transparent relative z-10">   {/* .game-container */}
+      <p className={`flex flex-col gap-6 p-4 text-2xl font-extrabold text-white text-center border-2 border-cyan-400 rounded-lg tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
         }`}>Round {round} / {ROUNDS}</p>
 
       {!gameStarted && countdown > 0 && ( /* countdown */
-        <div className="text-4xl font-bold mb-4 text-center text-white">{countdown}</div>
+        <div className="px-6 py-2 text-4xl font-bold mb-4 text-center text-white border-2 border-cyan-400 rounded-lg">{countdown}</div>
       )}
 
-      <div className="grid grid-cols-[240px_1fr_1fr] w-full max-w-[1600px] ml-auto items-center">     {/* .board-container */}
-        {/* .stats */}<div className="flex items-center justify-center self-stretch">
-          <div
-            className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
-              }`}
-          >
-            <div>WPM: {wpm}</div>
-            <div>ACCURACY: {accuracy.toFixed(1)}%</div>
-          </div>
-        </div>
-
+      <div className="grid grid-cols-[1fr_20px_1fr] w-full max-w-[1600px] mx-auto items-center">     {/* .board-container */}
         <Board
           board={playerBoard}
           title="YOU"
           overlay={result === "lose" ? "YOU LOSE" : null}
           shake={playerHit}
         />
+        {/* .stats */}<div className="flex items-center justify-center self-stretch">
+          <div
+            className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity 
+              duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
+              }`}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
+              <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{wpm}</div>
+              <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
+              <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
+            </div>
+          </div>
+        </div>
+
         <Board
           board={enemyBoard}
           title="OPPONENT"
