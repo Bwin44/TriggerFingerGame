@@ -56,7 +56,7 @@ function Board({ board, title, overlay, shake, titleColor }) {
       }}
     >
       {/* .board */}
-      <div className="mb-3 text-2xl font-bold text-center text-white" style={{color: titleColor}}>{title}</div>  {/* .board-title */}
+      <div className="mb-3 text-2xl font-bold text-center text-white" style={{ color: titleColor }}>{title}</div>  {/* .board-title */}
 
       <div
         className="board-grid relative"
@@ -117,6 +117,8 @@ export default function Game({ onGameOver }) {
   const [correctChars, setCorrectChars] = useState(0);
   const [totalChars, setTotalChars] = useState(0);
   const [correctWords, setCorrectWords] = useState(0);
+  const [enemyCorrectChars, enemySetCorrectChars] = useState(0);
+  const [enemyTotalChars, enemySetTotalChars] = useState(0);
   const [enemyCorrectWords, setEnemyCorrectWords] = useState(0);
 
   const [result, setResult] = useState(null);
@@ -127,7 +129,7 @@ export default function Game({ onGameOver }) {
   const [countdown, setCountdown] = useState(COUNTDOWN);
   const [gameStarted, setGameStarted] = useState(false);
   const [startTime, setStartTime] = useState(null);
-  const [enemyStartTime, setEnemyStartTime]  = useState(null);
+  const [enemyStartTime, setEnemyStartTime] = useState(null);
 
   const inputRef = useRef(null);
   const currentWord = words[currentWordIndex];
@@ -142,16 +144,17 @@ export default function Game({ onGameOver }) {
   const accuracy =
     totalChars > 0 ? (correctChars / totalChars) * 100 : 100;
 
-    const enemyElapsedMin = enemyStartTime
-  ? (Date.now() - enemyStartTime) / 60000
-  : 0;
-
-const enemyWPM =
-  enemyElapsedMin > 0
-    ? Math.round((enemyCorrectWords / enemyElapsedMin))
+  const enemyElapsedMin = enemyStartTime
+    ? (Date.now() - enemyStartTime) / 60000
     : 0;
 
-const enemyAccuracy = 100;
+  const enemyWPM =
+    enemyElapsedMin > 0
+      ? Math.round((enemyCorrectWords / enemyElapsedMin))
+      : 0;
+
+  const enemyAccuracy =
+    totalChars > 0 ? (enemyCorrectChars / enemyTotalChars) * 100 : 100;
 
   /* ================= AUTO FOCUS ================= */
   useEffect(() => {
@@ -262,11 +265,11 @@ const enemyAccuracy = 100;
         }
 
         return n;
-    });
-  }, 1200); // AI "typing speed"
+      });
+    }, 1200); // AI "typing speed"
 
-  return () => clearInterval(interval);
-}, [gameStarted, result]);
+    return () => clearInterval(interval);
+  }, [gameStarted, result]);
 
   /* ================= WIN / LOSE ================= */
   useEffect(() => {
@@ -303,7 +306,7 @@ const enemyAccuracy = 100;
     setEnemyCorrectWords(0);
     setCurrentWordIndex(0);
     setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
-    setWordStatuses(Array.from({length: WORD_QUEUE_SIZE}, (_, i) => i === 0 ? "current" : "current"));
+    setWordStatuses(Array.from({ length: WORD_QUEUE_SIZE }, (_, i) => i === 0 ? "current" : "current"));
     setCorrectChars(0);
     setTotalChars(0);
     setInput("");
@@ -336,26 +339,26 @@ const enemyAccuracy = 100;
         >
           {/* Player .stats */}
           <div className="flex flex-col gap-2 text-left self-start translate-x-[-80px]">
-            <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
-            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{wpm}</div>
-            <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
-            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
+            <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
+            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{wpm}</div>
+            <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
+            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
           </div>
 
           {/* Opponent .stats */}
           <div className="flex flex-col gap-2 text-right self-end translate-x-[80px]">
-            <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
-            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
-            <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
-            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{enemyAccuracy.toFixed(1)}%</div>
+            <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
+            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
+            <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
+            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyAccuracy.toFixed(1)}%</div>
           </div>
         </div>
 
-      <Board
-        board={enemyBoard}
-        title="OPPONENT"
-        titleColor="#e96262ff" // red-500
-        overlay={result === "win" ? "YOU WIN" : null}
+        <Board
+          board={enemyBoard}
+          title="OPPONENT"
+          titleColor="#e96262ff" // red-500
+          overlay={result === "win" ? "YOU WIN" : null}
           shake={enemyHit}
         />
       </div>
