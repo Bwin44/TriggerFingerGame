@@ -59,12 +59,23 @@ function Board({ board, title, overlay, shake, titleColor }) {
       <div className="mb-3 text-2xl font-bold text-center text-white" style={{color: titleColor}}>{title}</div>  {/* .board-title */}
 
       <div
-        className="board-grid"
+        className="board-grid relative"
         style={{
           gridTemplateColumns: `repeat(${COLS}, 1fr)`,
           gridTemplateRows: `repeat(${ROWS}, 1fr)`
         }}
       >
+        <AnimatePresence>
+          {shake && (
+            <motion.div
+              className="bg-red-500/40 pointer-events-none rounded-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            />
+          )}
+        </AnimatePresence>
         {board.flat().map((cell, i) => (
           <div
             key={i}
@@ -116,6 +127,7 @@ export default function Game({ onGameOver }) {
   const [countdown, setCountdown] = useState(COUNTDOWN);
   const [gameStarted, setGameStarted] = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const [enemyStartTime, setEnemyStartTime]  = useState(null);
 
   const inputRef = useRef(null);
   const currentWord = words[currentWordIndex];
@@ -130,6 +142,17 @@ export default function Game({ onGameOver }) {
   const accuracy =
     totalChars > 0 ? (correctChars / totalChars) * 100 : 100;
 
+    const enemyElapsedMin = enemyStartTime
+  ? (Date.now() - enemyStartTime) / 60000
+  : 0;
+
+const enemyWPM =
+  enemyElapsedMin > 0
+    ? Math.round((enemyCorrectWords / enemyElapsedMin))
+    : 0;
+
+const enemyAccuracy = 100;
+
   /* ================= AUTO FOCUS ================= */
   useEffect(() => {
     if (gameStarted && inputRef.current) inputRef.current.focus();
@@ -137,6 +160,7 @@ export default function Game({ onGameOver }) {
 
   /* ================= ROUND CONTROL ================= */
   function startRound() {
+    setCurrentWordIndex(0);
     setCountdown(COUNTDOWN);
     setGameStarted(false);
 
@@ -146,6 +170,7 @@ export default function Game({ onGameOver }) {
           clearInterval(timer);
           setGameStarted(true);
           setStartTime(Date.now());
+          setEnemyStartTime(Date.now());
         }
         return c - 1;
       });
@@ -276,8 +301,9 @@ export default function Game({ onGameOver }) {
     setPlayerBoard(emptyBoard());
     setEnemyBoard(emptyBoard());
     setEnemyCorrectWords(0);
-    setWords(Array.from({ length: 5 }, randomWord));
-    setWordStatuses(Array(7).fill("current"));
+    setCurrentWordIndex(0);
+    setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
+    setWordStatuses(Array.from({length: WORD_QUEUE_SIZE}, (_, i) => i === 0 ? "current" : "current"));
     setCorrectChars(0);
     setTotalChars(0);
     setInput("");
@@ -294,7 +320,7 @@ export default function Game({ onGameOver }) {
         <div className="px-6 py-2 text-4xl font-bold mb-4 text-center text-white border-2 border-cyan-400 rounded-lg">{countdown}</div>
       )}
 
-      <div className="grid grid-cols-[1fr_10px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
+      <div className="grid grid-cols-[1fr_180px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
         <Board
           board={playerBoard}
           title="YOU"
@@ -302,27 +328,34 @@ export default function Game({ onGameOver }) {
           overlay={result === "lose" ? "YOU LOSE" : null}
           shake={playerHit}
         />
-        {/* .stats */}
-        <div className="flex items-center justify-center self-stretch">
-          <div
-            className={`flex flex-col gap-6 text-2xl font-extrabold text-white text-center tracking-wide transition-opacity 
-              duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
-              }`}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
-              <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{wpm}</div>
-              <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
-              <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
-            </div>
+
+        <div
+          className={`flex flex-col items-stretch justify-center gap-10
+    text-2xl font-extrabold text-white transition-opacity duration-300
+    ${gameStarted ? "opacity-100" : "opacity-40"}`}
+        >
+          {/* Player .stats */}
+          <div className="flex flex-col gap-2 text-left self-start translate-x-[-80px]">
+            <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
+            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{wpm}</div>
+            <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
+            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
+          </div>
+
+          {/* Opponent .stats */}
+          <div className="flex flex-col gap-2 text-right self-end translate-x-[80px]">
+            <div className="text-sm font-extrabold tracking-widest text-cyan-300">WPM</div>
+            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
+            <div className="text-sm font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
+            <div className="px-6 py-2 text-4xl border-2 border-cyan-400 rounded-lg bg-black">{enemyAccuracy.toFixed(1)}%</div>
           </div>
         </div>
 
-        <Board
-          board={enemyBoard}
-          title="OPPONENT"
-          titleColor="#e96262ff" // red-500
-          overlay={result === "win" ? "YOU WIN" : null}
+      <Board
+        board={enemyBoard}
+        title="OPPONENT"
+        titleColor="#e96262ff" // red-500
+        overlay={result === "win" ? "YOU WIN" : null}
           shake={enemyHit}
         />
       </div>
