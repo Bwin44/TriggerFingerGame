@@ -42,7 +42,7 @@ const addLine = (board) => [...board.slice(1), Array(COLS).fill(1)];
 const removeLine = (board) => [Array(COLS).fill(0), ...board.slice(0, -1)];
 
 /* ================= BOARD ================= */
-function Board({ board, title, overlay, shake }) {
+function Board({ board, title, overlay, shake, titleColor }) {
   return (
     <motion.div
       className="relative flex flex-col items-center"
@@ -56,7 +56,7 @@ function Board({ board, title, overlay, shake }) {
       }}
     >
       {/* .board */}
-      <div className="mb-3 text-2xl font-bold text-center text-white">{title}</div>  {/* .board-title */}
+      <div className="mb-3 text-2xl font-bold text-center text-white" style={{color: titleColor}}>{title}</div>  {/* .board-title */}
 
       <div
         className="board-grid"
@@ -298,6 +298,7 @@ export default function Game({ onGameOver }) {
         <Board
           board={playerBoard}
           title="YOU"
+          titleColor="#4ade80"
           overlay={result === "lose" ? "YOU LOSE" : null}
           shake={playerHit}
         />
@@ -320,6 +321,7 @@ export default function Game({ onGameOver }) {
         <Board
           board={enemyBoard}
           title="OPPONENT"
+          titleColor="#e96262ff" // red-500
           overlay={result === "win" ? "YOU WIN" : null}
           shake={enemyHit}
         />

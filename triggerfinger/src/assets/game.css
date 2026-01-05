@@ -48,7 +48,7 @@
 }*/
 
 /* Words in the queue */
-.word-queue span {
+/*.word-queue span {
   padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
   font-weight: bold;
@@ -56,32 +56,32 @@
   font-family: Arial, sans-serif;
   min-width: 36px;
   text-align: center;
-}
+}*/
 
 /* Word status colors */
-.word-current {
+/*.word-current {
   background-color: gray;
   color: white;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 4px;
-}
+}*/
 
-.word-correct {
+/*.word-correct {
   background-color: green;
   color: white;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 4px;
-}
+}*/
 
-.word-incorrect {
+/*.word-incorrect {
   background-color: red;
   color: white;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 4px;
-}
+}*/
 
 /* Input box */
 /*.game-input {
@@ -133,13 +133,12 @@
 
 /* Grid fills available space */
 .board-grid {
-  width: 70%;
+  width: 100%;
+  max-width: 70%;
   aspect-ratio: 1 / 2;        /* Tall board */
   max-height: 50vh;
-
   display: grid;
   gap: 4px;
-
   background-color: #111;
   padding: 0.5rem;
   border-radius: 0.75rem;
@@ -148,6 +147,8 @@
 
 /* Cells scale automatically */
 .board-cell {
+  width: 100%;
+  height: 100%;
   background-color: #1f2933;
   border-radius: 3px;
 }
