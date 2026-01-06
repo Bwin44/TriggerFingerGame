@@ -310,7 +310,6 @@ export default function Game({ onGameOver }) {
     setEnemyCorrectWords(0);
     setCurrentWordIndex(0);
     setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
-    setWordStatuses(Array.from({ length: WORD_QUEUE_SIZE }, (_, i) => i === 0 ? "current" : "current"));
     setWordStatuses(Array(WORD_QUEUE_SIZE).fill(null));
     setCorrectChars(0);
     setTotalChars(0);
