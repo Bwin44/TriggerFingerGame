@@ -107,6 +107,9 @@ export default function Game({ onGameOver }) {
   const [words, setWords] = useState(() =>
     Array.from({ length: WORD_QUEUE_SIZE }, randomWord)
   );
+  const [nextWords, nextSetWords] = useState(() =>
+    Array.from({ length: WORD_QUEUE_SIZE }, randomWord)
+  );
 
   const [wordStatuses, setWordStatuses] = useState(
     () => Array(WORD_QUEUE_SIZE).fill("current")
@@ -235,8 +238,9 @@ export default function Game({ onGameOver }) {
     }
     // 🧠 If this WAS the 5th word → shift entire queue
     else {
-      setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
-      setWordStatuses(Array(WORD_QUEUE_SIZE).fill("current"));
+      setWords(nextWords);
+      nextSetWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
+      setWordStatuses(Array(WORD_QUEUE_SIZE).fill(null));
       setCurrentWordIndex(0);
     }
 
@@ -307,6 +311,7 @@ export default function Game({ onGameOver }) {
     setCurrentWordIndex(0);
     setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
     setWordStatuses(Array.from({ length: WORD_QUEUE_SIZE }, (_, i) => i === 0 ? "current" : "current"));
+    setWordStatuses(Array(WORD_QUEUE_SIZE).fill(null));
     setCorrectChars(0);
     setTotalChars(0);
     setInput("");
@@ -369,31 +374,54 @@ export default function Game({ onGameOver }) {
 
         <div className="flex flex-col items-center gap-4">
           {/* WORD QUEUE */}
-          <div className="flex flex-nonwrap items-center justify-center gap-3 p-1 text-xl font-bold rounded-lg tracking-wide 
-          overflow-x-hidden overflow-y-hidden whitespace-nowrap max-w-full bg-[#374151]">
-            {words.map((w, i) => {
-              const status = wordStatuses[i];
-              const isActive = i === currentWordIndex;
+          <div className="relative h-24 flex flex-col items-center justify-end overflow-hidden">
 
-              return (
-                <span
-                  key={i}
-                  className={`px-3 py-1 rounded-lg transition-all duration-200
-        ${status === "correct"
-                      ? "text-green-400"
-                      : status === "incorrect"
-                        ? "text-red-400"
-                        : isActive
-                          ? "text-cyan-300 scale-110"
-                          : "text-white/60"
-                    }`}
-                >
-                  {w}
-                </span>
-              );
-            })}
+  {/* NEXT WORD QUEUE (preview) */}
+  <motion.div
+    key="next"
+    className="absolute top-0 flex items-center gap-2 text-sm font-bold
+               px-3 py-1 rounded-lg bg-[#374151]/50 opacity-40 text-white/70"
+    initial={{ y: -10, opacity: 0 }}
+    animate={{ y: 0, opacity: 0.4 }}
+  >
+    {nextWords.map((w, i) => (
+      <span key={i}>{w}</span>
+    ))}
+  </motion.div>
 
-          </div>
+  {/* CURRENT WORD QUEUE */}
+  <motion.div
+    key="current"
+    className="flex items-center gap-3 px-3 py-1 text-lg font-bold
+               rounded-lg bg-[#374151]"
+    layout
+    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+  >
+    {words.map((w, i) => {
+      const status = wordStatuses[i];
+      const isActive = i === currentWordIndex;
+
+      return (
+        <span
+          key={i}
+          className={`px-2 py-0.5 rounded-md transition-all duration-200
+            ${status === "correct"
+              ? "text-green-400"
+              : status === "incorrect"
+              ? "text-red-400"
+              : isActive
+              ? "text-cyan-300 scale-110"
+              : "text-white/60"
+            }`}
+        >
+          {w}
+        </span>
+      );
+    })}
+  </motion.div>
+
+</div>
+
 
           {/* INPUT */}
           {gameStarted && (
