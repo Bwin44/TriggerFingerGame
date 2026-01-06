@@ -327,7 +327,7 @@ export default function Game({ onGameOver }) {
         <div className="px-6 py-2 text-4xl font-bold mb-4 text-center text-white border-2 border-cyan-400 rounded-lg">{countdown}</div>
       )}
 
-      <div className="grid grid-cols-[1fr_180px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
+      <div className="grid grid-cols-[1fr_10px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
         <Board
           board={playerBoard}
           title="YOU"
@@ -342,7 +342,7 @@ export default function Game({ onGameOver }) {
     ${gameStarted ? "opacity-100" : "opacity-40"}`}
         >
           {/* Player .stats */}
-          <div className="flex flex-col gap-2 text-left self-start translate-x-[-80px]">
+          <div className="flex flex-col gap-2 text-left self-start translate-x-[-120px]">
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
             <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{wpm}</div>
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
@@ -350,7 +350,7 @@ export default function Game({ onGameOver }) {
           </div>
 
           {/* Opponent .stats */}
-          <div className="flex flex-col gap-2 text-right self-end translate-x-[80px]">
+          <div className="flex flex-col gap-2 text-right self-end translate-x-[120px]">
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
             <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
@@ -375,51 +375,51 @@ export default function Game({ onGameOver }) {
           {/* WORD QUEUE */}
           <div className="relative h-24 flex flex-col items-center justify-end overflow-hidden">
 
-  {/* NEXT WORD QUEUE (preview) */}
-  <motion.div
-    key="next"
-    className="absolute top-0 flex items-center gap-2 text-sm font-bold
+            {/* NEXT WORD QUEUE (preview) */}
+            <motion.div
+              key="next"
+              className="absolute top-0 flex items-center gap-2 text-sm font-bold
                px-3 py-1 rounded-lg bg-[#374151]/50 opacity-40 text-white/70"
-    initial={{ y: -10, opacity: 0 }}
-    animate={{ y: 0, opacity: 0.4 }}
-  >
-    {nextWords.map((w, i) => (
-      <span key={i}>{w}</span>
-    ))}
-  </motion.div>
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 0.4 }}
+            >
+              {nextWords.map((w, i) => (
+                <span key={i}>{w}</span>
+              ))}
+            </motion.div>
 
-  {/* CURRENT WORD QUEUE */}
-  <motion.div
-    key="current"
-    className="flex items-center gap-3 px-3 py-1 text-lg font-bold
+            {/* CURRENT WORD QUEUE */}
+            <motion.div
+              key="current"
+              className="flex items-center gap-3 px-3 py-1 text-lg font-bold
                rounded-lg bg-[#374151]"
-    layout
-    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-  >
-    {words.map((w, i) => {
-      const status = wordStatuses[i];
-      const isActive = i === currentWordIndex;
+              layout
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            >
+              {words.map((w, i) => {
+                const status = wordStatuses[i];
+                const isActive = i === currentWordIndex;
 
-      return (
-        <span
-          key={i}
-          className={`px-2 py-0.5 rounded-md transition-all duration-200
+                return (
+                  <span
+                    key={i}
+                    className={`px-2 py-0.5 rounded-md transition-all duration-200
             ${status === "correct"
-              ? "text-green-400"
-              : status === "incorrect"
-              ? "text-red-400"
-              : isActive
-              ? "text-cyan-300 scale-110"
-              : "text-white/60"
-            }`}
-        >
-          {w}
-        </span>
-      );
-    })}
-  </motion.div>
+                        ? "text-green-400"
+                        : status === "incorrect"
+                          ? "text-red-400"
+                          : isActive
+                            ? "text-cyan-300 scale-110"
+                            : "text-white/60"
+                      }`}
+                  >
+                    {w}
+                  </span>
+                );
+              })}
+            </motion.div>
 
-</div>
+          </div>
 
 
           {/* INPUT */}
