@@ -196,53 +196,53 @@ export default function Game({ onGameOver }) {
   }
 
   function submitWord() {
-  const value = input.toUpperCase().trim();
-  if (!value) return;
+    const value = input.toUpperCase().trim();
+    if (!value) return;
 
-  // ✅ SNAPSHOT current word at time of submission
-  const activeWord = words[currentWordIndex];
-  const isCorrect = value === activeWord;
+    // ✅ SNAPSHOT current word at time of submission
+    const activeWord = words[currentWordIndex];
+    const isCorrect = value === activeWord;
 
-  // Mark word status
-  setWordStatuses((prev) => {
-    const updated = [...prev];
-    updated[currentWordIndex] = isCorrect ? "correct" : "incorrect";
-    return updated;
-  });
-
-  setTotalChars((c) => c + value.length);
-  if (isCorrect) setCorrectChars((c) => c + value.length);
-
-  if (isCorrect) {
-    setCorrectWords((c) => {
-      const n = c + 1;
-
-      if (n % WORDS_PER_ATTACK === 0) {
-        setEnemyBoard((b) => addLine(b));
-        setEnemyHit(true);
-        setTimeout(() => setEnemyHit(false), 200);
-      }
-
-      if (n % WORDS_PER_CLEAR === 0) {
-        setPlayerBoard((b) => removeLine(b));
-      }
-
-      return n;
+    // Mark word status
+    setWordStatuses((prev) => {
+      const updated = [...prev];
+      updated[currentWordIndex] = isCorrect ? "correct" : "incorrect";
+      return updated;
     });
-  }
 
-  // 🔁 Sliding logic
-  if (currentWordIndex < ACTIVE_WORD) {
-    setCurrentWordIndex((i) => i + 1);
-  } else {
-    setWords((prev) => [...prev.slice(1), randomWord()]);
-    setWordStatuses((prev) => [...prev.slice(1), null]);
-    setCurrentWordIndex(ACTIVE_WORD);
-  }
+    setTotalChars((c) => c + value.length);
+    if (isCorrect) setCorrectChars((c) => c + value.length);
 
-  // ✅ ALWAYS clear input
-  setInput("");
-}
+    if (isCorrect) {
+      setCorrectWords((c) => {
+        const n = c + 1;
+
+        if (n % WORDS_PER_ATTACK === 0) {
+          setEnemyBoard((b) => addLine(b));
+          setEnemyHit(true);
+          setTimeout(() => setEnemyHit(false), 200);
+        }
+
+        if (n % WORDS_PER_CLEAR === 0) {
+          setPlayerBoard((b) => removeLine(b));
+        }
+
+        return n;
+      });
+    }
+
+    // 🔁 Sliding logic
+    if (currentWordIndex < ACTIVE_WORD) {
+      setCurrentWordIndex((i) => i + 1);
+    } else {
+      setWords((prev) => [...prev.slice(1), randomWord()]);
+      setWordStatuses((prev) => [...prev.slice(1), null]);
+      setCurrentWordIndex(ACTIVE_WORD);
+    }
+
+    // ✅ ALWAYS clear input
+    setInput("");
+  }
 
 
 
@@ -376,32 +376,46 @@ export default function Game({ onGameOver }) {
             {/* CURRENT WORD QUEUE */}
             <motion.div
               key="current"
-              className="flex items-center gap-3 px-3 py-1 text-lg font-bold
-               rounded-lg bg-[#374151]"
+              className="relative w-[520px] h-14 overflow-hidden rounded-lg bg-[#374151] flex items-center justify-center"
               layout
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              transition={{ duration: 1.2, type: "spring", stiffness: 200, damping: 20 }}
             >
               {words.map((w, i) => {
                 const status = wordStatuses[i];
                 const isActive = i === currentWordIndex;
 
+                const offset = i - ACTIVE_WORD;
+
                 return (
-                  <span
-                    key={i}
-                    className={`px-2 py-0.5 rounded-md transition-all duration-200
-            ${status === "correct"
+                  <motion.span
+                    key={w + i}
+                    initial={false}
+                    animate={{
+                      x: offset * 110,
+                      scale: isActive ? 1.5 : 1,
+                      opacity: Math.abs(offset) > 2 ? 0 : 1
+                      
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 22
+                    }}
+                    className={`absolute px-3 py-1 font-bold rounded-md whitespace-nowrap
+        ${status === "correct"
                         ? "text-green-400"
                         : status === "incorrect"
                           ? "text-red-400"
                           : isActive
-                            ? "text-cyan-300 scale-150"
+                            ? "text-cyan-300"
                             : "text-white/60"
                       }`}
                   >
                     {w}
-                  </span>
+                  </motion.span>
                 );
               })}
+
             </motion.div>
 
           </div>
