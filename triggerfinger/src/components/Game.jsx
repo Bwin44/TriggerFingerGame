@@ -9,6 +9,7 @@ const WORDS_PER_ATTACK = 5;
 const WORDS_PER_CLEAR = 7;
 const ROUNDS = 3;
 const COUNTDOWN = 3;
+const ACTIVE_WORD = 2;
 
 const WORD_BANK = [
   "THE", "BE", "TO", "OF", "AND", "A", "IN", "THAT", "HAVE", "I", "IT", "FOR", "NOT", "ON", "WITH",
@@ -107,9 +108,6 @@ export default function Game({ onGameOver }) {
   const [words, setWords] = useState(() =>
     Array.from({ length: WORD_QUEUE_SIZE }, randomWord)
   );
-  const [nextWords, nextSetWords] = useState(() =>
-    Array.from({ length: WORD_QUEUE_SIZE }, randomWord)
-  );
 
   const [wordStatuses, setWordStatuses] = useState(
     () => Array(WORD_QUEUE_SIZE).fill("current")
@@ -135,7 +133,6 @@ export default function Game({ onGameOver }) {
   const [enemyStartTime, setEnemyStartTime] = useState(null);
 
   const inputRef = useRef(null);
-  const currentWord = words[currentWordIndex];
 
   const [playerHit, setPlayerHit] = useState(false);
   const [enemyHit, setEnemyHit] = useState(false);
@@ -167,6 +164,8 @@ export default function Game({ onGameOver }) {
   /* ================= ROUND CONTROL ================= */
   function startRound() {
     setCurrentWordIndex(0);
+    setWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
+    setWordStatuses(Array(WORD_QUEUE_SIZE).fill(null));
     setCountdown(COUNTDOWN);
     setGameStarted(false);
 
@@ -197,55 +196,54 @@ export default function Game({ onGameOver }) {
   }
 
   function submitWord() {
-    const value = input.toUpperCase().trim();
-    if (!value) return;
+  const value = input.toUpperCase().trim();
+  if (!value) return;
 
-    const isCorrect = value === currentWord;
+  // ✅ SNAPSHOT current word at time of submission
+  const activeWord = words[currentWordIndex];
+  const isCorrect = value === activeWord;
 
-    // Mark the CURRENT word green/red
-    setWordStatuses((prev) => {
-      const updated = [...prev];
-      updated[currentWordIndex] = isCorrect ? "correct" : "incorrect";
-      return updated;
+  // Mark word status
+  setWordStatuses((prev) => {
+    const updated = [...prev];
+    updated[currentWordIndex] = isCorrect ? "correct" : "incorrect";
+    return updated;
+  });
+
+  setTotalChars((c) => c + value.length);
+  if (isCorrect) setCorrectChars((c) => c + value.length);
+
+  if (isCorrect) {
+    setCorrectWords((c) => {
+      const n = c + 1;
+
+      if (n % WORDS_PER_ATTACK === 0) {
+        setEnemyBoard((b) => addLine(b));
+        setEnemyHit(true);
+        setTimeout(() => setEnemyHit(false), 200);
+      }
+
+      if (n % WORDS_PER_CLEAR === 0) {
+        setPlayerBoard((b) => removeLine(b));
+      }
+
+      return n;
     });
-
-    setTotalChars((c) => c + value.length);
-    if (isCorrect) setCorrectChars((c) => c + value.length);
-
-    if (isCorrect) {
-      setCorrectWords((c) => {
-        const n = c + 1;
-
-        //Player attacks every 5 words
-        if (n % WORDS_PER_ATTACK === 0) {
-          setEnemyBoard((b) => addLine(b));
-          setEnemyHit(true);
-          setTimeout(() => setEnemyHit(false), 200);
-        }
-
-        //Player clears every 7 words
-        if (n % WORDS_PER_CLEAR === 0) {
-          setPlayerBoard((b) => removeLine(b));
-        }
-
-        return n;
-      });
-    }
-
-    // 🧠 If this was NOT the last word → move cursor
-    if (currentWordIndex < WORD_QUEUE_SIZE - 1) {
-      setCurrentWordIndex((i) => i + 1);
-    }
-    // 🧠 If this WAS the 5th word → shift entire queue
-    else {
-      setWords(nextWords);
-      nextSetWords(Array.from({ length: WORD_QUEUE_SIZE }, randomWord));
-      setWordStatuses(Array(WORD_QUEUE_SIZE).fill(null));
-      setCurrentWordIndex(0);
-    }
-
-    setInput("");
   }
+
+  // 🔁 Sliding logic
+  if (currentWordIndex < ACTIVE_WORD) {
+    setCurrentWordIndex((i) => i + 1);
+  } else {
+    setWords((prev) => [...prev.slice(1), randomWord()]);
+    setWordStatuses((prev) => [...prev.slice(1), null]);
+    setCurrentWordIndex(ACTIVE_WORD);
+  }
+
+  // ✅ ALWAYS clear input
+  setInput("");
+}
+
 
 
   /* ================= AI ================= */
@@ -375,19 +373,6 @@ export default function Game({ onGameOver }) {
           {/* WORD QUEUE */}
           <div className="relative h-24 flex flex-col items-center justify-end overflow-hidden">
 
-            {/* NEXT WORD QUEUE (preview) */}
-            <motion.div
-              key="next"
-              className="absolute top-0 flex items-center gap-2 text-sm font-bold
-               px-3 py-1 rounded-lg bg-[#374151]/50 opacity-40 text-white/70"
-              initial={{ y: -10, opacity: 0 }}
-              animate={{ y: 0, opacity: 0.4 }}
-            >
-              {nextWords.map((w, i) => (
-                <span key={i}>{w}</span>
-              ))}
-            </motion.div>
-
             {/* CURRENT WORD QUEUE */}
             <motion.div
               key="current"
@@ -409,7 +394,7 @@ export default function Game({ onGameOver }) {
                         : status === "incorrect"
                           ? "text-red-400"
                           : isActive
-                            ? "text-cyan-300 scale-110"
+                            ? "text-cyan-300 scale-150"
                             : "text-white/60"
                       }`}
                   >
