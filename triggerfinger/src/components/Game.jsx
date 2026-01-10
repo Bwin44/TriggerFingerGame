@@ -319,7 +319,7 @@ export default function Game({ onGameOver }) {
 
   /* ================= RENDER ================= */
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 gap-6 bg-transparent relative z-10">   {/* .game-container */}
+    <div className="min-h-screen flex flex-col items-center gap-6 bg-transparent relative z-10">   {/* .game-container */}
       <p className={`flex flex-col gap-6 p-4 text-2xl font-extrabold text-white text-center border-2 border-cyan-400 rounded-lg tracking-wide transition-opacity duration-300 ${gameStarted ? "opacity-100" : "opacity-40"
         }`}>Round {round} / {ROUNDS}</p>
 
@@ -327,7 +327,7 @@ export default function Game({ onGameOver }) {
         <div className="px-6 py-2 text-4xl font-bold mb-4 text-center text-white border-2 border-cyan-400 rounded-lg">{countdown}</div>
       )}
 
-      <div className="grid grid-cols-[1fr_10px_1fr] w-full max-w-[1600px] mx-auto items-start gap-6">     {/* .board-container */}
+      <div className="grid grid-cols-[1fr_10px_1fr] w-full max-w-[1000px] mx-auto items-start gap-6">     {/* .board-container */}
         <Board
           board={playerBoard}
           title="YOU"
@@ -342,19 +342,19 @@ export default function Game({ onGameOver }) {
     ${gameStarted ? "opacity-100" : "opacity-40"}`}
         >
           {/* Player .stats */}
-          <div className="flex flex-col gap-2 text-left self-start translate-x-[-120px]">
+          <div className="flex flex-col gap-2 text-left self-start translate-x-[-80px]">
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
-            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{wpm}</div>
+            <div className="px-4 py-1 text-2xl border border-cyan-400 rounded-lg bg-black">{wpm}</div>
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
-            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
+            <div className="px-4 py-1 text-2xl border border-cyan-400 rounded-lg bg-black">{accuracy.toFixed(1)}%</div>
           </div>
 
           {/* Opponent .stats */}
-          <div className="flex flex-col gap-2 text-right self-end translate-x-[120px]">
+          <div className="flex flex-col gap-2 text-right self-end translate-x-[80px]">
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">WPM</div>
-            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
+            <div className="px-4 py-1 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyWPM}</div>
             <div className="text-xs font-extrabold tracking-widest text-cyan-300">ACCURACY</div>
-            <div className="px-6 py-2 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyAccuracy.toFixed(1)}%</div>
+            <div className="px-4 py-1 text-2xl border border-cyan-400 rounded-lg bg-black">{enemyAccuracy.toFixed(1)}%</div>
           </div>
         </div>
 
