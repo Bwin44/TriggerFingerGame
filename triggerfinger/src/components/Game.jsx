@@ -376,7 +376,7 @@ export default function Game({ onGameOver }) {
             {/* CURRENT WORD QUEUE */}
             <motion.div
               key="current"
-              className="relative w-[520px] h-14 overflow-hidden rounded-lg bg-[#374151] flex items-center justify-center"
+              className="relative w-[520px] h-14 px-6 overflow-hidden rounded-lg bg-[#374151] flex items-center justify-center"
               layout
               transition={{ duration: 1.2, type: "spring", stiffness: 200, damping: 20 }}
             >
@@ -391,8 +391,8 @@ export default function Game({ onGameOver }) {
                     key={w + i}
                     initial={false}
                     animate={{
-                      x: offset * 110,
-                      scale: isActive ? 1.5 : 1,
+                      x: offset * 105,
+                      scale: isActive ? 1.3 : 1,
                       opacity: Math.abs(offset) > 2 ? 0 : 1
                       
                     }}
@@ -401,7 +401,7 @@ export default function Game({ onGameOver }) {
                       stiffness: 300,
                       damping: 22
                     }}
-                    className={`absolute px-3 py-1 font-bold rounded-md whitespace-nowrap
+                    className={`absolute min-w-[100px] max-w-[160px] text-center font-bold whitespace-nowrap
         ${status === "correct"
                         ? "text-green-400"
                         : status === "incorrect"
