@@ -137,6 +137,19 @@ export default function Game({ onGameOver }) {
   const [playerHit, setPlayerHit] = useState(false);
   const [enemyHit, setEnemyHit] = useState(false);
 
+  const TYPE_SOUND_POOL_SIZE = 3;
+
+  const typeSounds = useRef(
+    Array.from({ length: TYPE_SOUND_POOL_SIZE }, () => {
+      const audio = new Audio("/sounds/typingShort2.mp3");
+      audio.volume = 0.4;
+      return audio;
+    })
+  );
+
+  const typeSoundIndex = useRef(0);
+
+
   /* ================= METRICS ================= */
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
   const wpm =
@@ -186,6 +199,18 @@ export default function Game({ onGameOver }) {
   useEffect(() => {
     startRound();
   }, []);
+
+  /* ================= SOUND ================= */
+  function playTypeSound() {
+    const sounds = typeSounds.current;
+    const i = typeSoundIndex.current;
+
+    const sound = sounds[i];
+    sound.currentTime = 0;
+    sound.play().catch(() => { });
+
+    typeSoundIndex.current = (i + 1) % sounds.length;
+  }
 
   /* ================= INPUT ================= */
   function handleKeyDown(e) {
@@ -394,7 +419,7 @@ export default function Game({ onGameOver }) {
                       x: offset * 105,
                       scale: isActive ? 1.3 : 1,
                       opacity: Math.abs(offset) > 2 ? 0 : 1
-                      
+
                     }}
                     transition={{
                       type: "spring",
@@ -429,7 +454,17 @@ export default function Game({ onGameOver }) {
                    bg-cyan-500 text-black placeholder-black/60
                    focus:ring-4 focus:ring-cyan-300 transition"
               value={input}
-              onChange={(e) => setInput(e.target.value.toUpperCase())}
+              onChange={(e) => {
+                const next = e.target.value.toUpperCase();
+
+                // play sound only when a character is added
+                if (next.length > input.length) {
+                  playTypeSound();
+                }
+
+                setInput(next);
+              }}
+
               onKeyDown={handleKeyDown}
               disabled={!!result}
               placeholder="TYPE HERE..."
