@@ -149,19 +149,17 @@ export default function Game({ onGameOver }) {
     })
   );
 
-  const typeSoundIndex = useRef(0);
-
   useEffect(() => {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  audioCtxRef.current = ctx;
+    const ctx = new (window.AudioContext || window.AudioContext)();
+    audioCtxRef.current = ctx;
 
-  fetch("/sounds/typingShort2.mp3")
-    .then(res => res.arrayBuffer())
-    .then(data => ctx.decodeAudioData(data))
-    .then(buffer => {
-      typeBufferRef.current = buffer;
-    });
-}, []);
+    fetch("/sounds/typingShort2.mp3")
+      .then(res => res.arrayBuffer())
+      .then(data => ctx.decodeAudioData(data))
+      .then(buffer => {
+        typeBufferRef.current = buffer;
+      });
+  }, []);
 
   /* ================= METRICS ================= */
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
