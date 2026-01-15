@@ -138,6 +138,8 @@ export default function Game({ onGameOver }) {
   const [enemyHit, setEnemyHit] = useState(false);
 
   const TYPE_SOUND_POOL_SIZE = 3;
+  const audioCtxRef = useRef(null);
+  const typeBufferRef = useRef(null);
 
   const typeSounds = useRef(
     Array.from({ length: TYPE_SOUND_POOL_SIZE }, () => {
@@ -149,6 +151,17 @@ export default function Game({ onGameOver }) {
 
   const typeSoundIndex = useRef(0);
 
+  useEffect(() => {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  audioCtxRef.current = ctx;
+
+  fetch("/sounds/typingShort2.mp3")
+    .then(res => res.arrayBuffer())
+    .then(data => ctx.decodeAudioData(data))
+    .then(buffer => {
+      typeBufferRef.current = buffer;
+    });
+}, []);
 
   /* ================= METRICS ================= */
   const elapsedMin = startTime ? (Date.now() - startTime) / 60000 : 0;
@@ -202,14 +215,24 @@ export default function Game({ onGameOver }) {
 
   /* ================= SOUND ================= */
   function playTypeSound() {
-    const sounds = typeSounds.current;
-    const i = typeSoundIndex.current;
+    const ctx = audioCtxRef.current;
+    const buffer = typeBufferRef.current;
+    if (!ctx || !buffer) return;
 
-    const sound = sounds[i];
-    sound.currentTime = 0;
-    sound.play().catch(() => { });
+    // Required on Chrome if context is suspended
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
 
-    typeSoundIndex.current = (i + 1) % sounds.length;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = 0.95 + Math.random() * 0.1; // subtle variation
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.4;
+
+    source.connect(gain).connect(ctx.destination);
+    source.start();
   }
 
   /* ================= INPUT ================= */
