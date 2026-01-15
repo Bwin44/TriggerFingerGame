@@ -69,7 +69,7 @@ function Board({ board, title, overlay, shake, titleColor }) {
         <AnimatePresence>
           {shake && (
             <motion.div
-              className="bg-red-500/40 pointer-events-none rounded-lg"
+              className="absolute inset-0 bg-red-500/40 pointer-events-none rounded-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
